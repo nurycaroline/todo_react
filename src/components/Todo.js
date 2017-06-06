@@ -15,7 +15,8 @@ export default class Todo extends Component {
             done: false,
             action: 'add',
             isOpen: false,
-            message: ''
+            message: '',
+            isOpenLoading: false
 
         };
 	}
@@ -23,12 +24,13 @@ export default class Todo extends Component {
 		this.getTodos();
 	}
     getTodos = () =>{
+        this.setState({isOpenLoading: true});
         fetch('https://todowebservice.herokuapp.com/api/todos')
 			.then(response => {
 				return response.json();
 			})
 			.then(response => {
-				this.setState({todos: response});
+				this.setState({todos: response, isOpenLoading: false});
 			});
     }
 	adicionar = () => {
@@ -50,7 +52,7 @@ export default class Todo extends Component {
             return response.json();
         }).then(response => {
             if (response.errors){
-                alert(response.errors.description.message);
+                this.setState({todos: todos, description: '', done:false, message: response.errors.description.message, isOpen: true});
             }else {
                 todos.push(response);
                 this.setState({todos: todos, description: '', done:false, message: 'Registro inserido com sucesso.', isOpen: true});
@@ -110,6 +112,8 @@ export default class Todo extends Component {
         }).catch(err => console.error(err));
     }
 	render(){
+        let customStyle = {content : { top: '50%', boxShadow: '5px 5px 5px #888888', left: '50%', right: 'auto', bottom: 'auto', marginRight: '-50%', transform: 'translate(-50%, -50%)', textAlign: 'right'}};
+
 		return (
 			<div>
 				<div className='form'>
@@ -155,8 +159,11 @@ export default class Todo extends Component {
 					})
 				}
 
+                <Modal isOpen={this.state.isOpenLoading} style={customStyle}>
+                    <h1>Loading</h1>
+                </Modal>
 
-                <Modal isOpen={this.state.isOpen} style={{content : { top: '50%', boxShadow: '5px 5px 5px #888888', left: '50%', right: 'auto', bottom: 'auto', marginRight: '-50%', transform: 'translate(-50%, -50%)', textAlign: 'right'}}} >
+                <Modal isOpen={this.state.isOpen} style={customStyle}>
                     <button className='button_close' onClick={() => this.setState({isOpen: false})}>X</button>
                     <h1>{this.state.message}</h1>
                 </Modal>
