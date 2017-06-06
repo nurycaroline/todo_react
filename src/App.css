@@ -89,3 +89,12 @@ body {
 .button img {
 	width: 30px;
 }
+.button_close {
+	background: none;
+	border: 2px solid black;
+	font-size: 30px;
+	padding: 10px;
+	font-family: 'Bubbler One', sans-serif;
+	font-weight: bold;
+	box-shadow: 5px 5px 5px #888888
+}

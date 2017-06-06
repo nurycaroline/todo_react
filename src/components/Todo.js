@@ -3,6 +3,7 @@ import edit from "../assets/edit.png";
 import remove from "../assets/remove.png";
 import checked from '../assets/checked.png';
 import noChecked from '../assets/no-checked.png';
+import Modal from 'react-modal';
 
 export default class Todo extends Component {
     constructor(props){
@@ -12,7 +13,10 @@ export default class Todo extends Component {
             id: '',
             description: '', 
             done: false,
-            action: 'add'
+            action: 'add',
+            isOpen: false,
+            message: ''
+
         };
 	}
 	componentWillMount(){
@@ -49,8 +53,7 @@ export default class Todo extends Component {
                 alert(response.errors.description.message);
             }else {
                 todos.push(response);
-                this.setState({todos: todos, description: '', done:false});
-                alert('Registro inserido com sucesso.');
+                this.setState({todos: todos, description: '', done:false, message: 'Registro inserido com sucesso.', isOpen: true});
             }
         }).catch(err => console.error(err));
 	}
@@ -91,9 +94,8 @@ export default class Todo extends Component {
             }).then(response => {
                 return response.json();
             }).then(response => {
-                alert(`Registro atualizado com sucesso.`);
                 this.getTodos();
-                this.setState({description:'', done: false, id: '', action: 'add'});
+                this.setState({description:'', done: false, id: '', action: 'add', message: 'Registro atualizado com sucesso.', isOpen: true});
             }).catch(err => console.error(err));
     }
     remover = (id, description) => {
@@ -103,9 +105,8 @@ export default class Todo extends Component {
 		}).then(response => {
             return response;
         }).then(response => {
-            alert(`Registro ${description} com sucesso.`);
             todos = todos.filter(todo => todo._id !== id);
-            this.setState({todos: todos});
+            this.setState({todos: todos, message: `Registro ${description} com sucesso.`, isOpen: true});
         }).catch(err => console.error(err));
     }
 	render(){
@@ -153,6 +154,12 @@ export default class Todo extends Component {
 						);
 					})
 				}
+
+
+                <Modal isOpen={this.state.isOpen} style={{content : { top: '50%', left: '50%', right: 'auto', bottom: 'auto', marginRight: '-50%', transform: 'translate(-50%, -50%)', textAlign: 'right'}}} >
+                    <button className='button_close' onClick={() => this.setState({isOpen: false})}>X</button>
+                    <h1>{this.state.message}</h1>
+                </Modal>
 			</div>
 		);
 	}
