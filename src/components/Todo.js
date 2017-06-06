@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import edit from "../assets/edit.png";
+import remove from "../assets/remove.png";
+import checked from '../assets/checked.png';
+import noChecked from '../assets/no-checked.png';
 
 export default class Todo extends Component {
     constructor(props){
@@ -45,7 +49,7 @@ export default class Todo extends Component {
                 alert(response.errors.description.message);
             }else {
                 todos.push(response);
-                this.setState({todos: todos});
+                this.setState({todos: todos, description: '', done:false});
                 alert('Registro inserido com sucesso.');
             }
         }).catch(err => console.error(err));
@@ -89,7 +93,7 @@ export default class Todo extends Component {
             }).then(response => {
                 alert(`Registro atualizado com sucesso.`);
                 this.getTodos();
-                this.setState({description:'', done: false, id: ''});
+                this.setState({description:'', done: false, id: '', action: 'add'});
             }).catch(err => console.error(err));
     }
     remover = (id, description) => {
@@ -107,22 +111,44 @@ export default class Todo extends Component {
 	render(){
 		return (
 			<div>
-				<input type='text' value={this.state.description} onChange={(e) => this.setState({description: e.currentTarget.value})} /> 
-				<input type='checkbox' checked={this.state.done} onChange={() => this.setState({done: !this.state.done})} />
-				
-				<button onClick={() => this.adicionarEditar(this.state.action)}> {this.state.action ? 'Adicionar': 'Atualizar'} </button>
+				<div className='form'>
+                    <div className='description_box'>
+                        <label>Description</label><br />
+                        <input className='description' type='text' value={this.state.description} onChange={(e) => this.setState({description: e.currentTarget.value})} /> 
+                    </div>
+
+                    <div className='done_box'>
+                        <label>Done</label><br />
+                         <input type='checkbox' checked={this.state.done} onChange={() => this.setState({done: !this.state.done})} />
+                        <span></span>
+                    </div>
+                    
+                    <button className='action' onClick={() => this.adicionarEditar(this.state.action)}> {this.state.action === 'add' ? 'Add': 'Update'} </button>
+
+                </div>
+
+                <br />
 				
 				{
 					this.state.todos.length && this.state.todos.map( todo => {
 						return (
 							<div key={todo._id} className='card'>
-								<input type="checkbox" checked={todo.done} disabled />
-								{todo.description}
-                                 - 
-                                {this.formatDate(todo.createdAt)}
+                                <img className='checkbox' src={todo.done ? checked : noChecked} alt="checkbox"/>
 
-                                <button onClick={() => this.onClickEditar(todo._id)}>Editar</button>
-                                <button onClick={() => this.remover(todo._id, todo.description)}>Remover</button>
+                                <div className='desc'>
+                                    <span className='createdAt'>{this.formatDate(todo.createdAt)}</span>
+                                    <br />
+                                    <span>{todo.description}</span>
+                                </div>
+
+                                <div className='buttons'>
+                                    <button className='button' onClick={() => this.onClickEditar(todo._id)}>
+                                        <img src={edit} alt='editar' />
+                                    </button>
+                                    <button className='button' onClick={() => this.remover(todo._id, todo.description)}>
+                                        <img src={remove} alt='remover' />
+                                    </button>
+                                </div>
 							</div>
 						);
 					})
