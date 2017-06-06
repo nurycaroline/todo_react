@@ -156,7 +156,7 @@ export default class Todo extends Component {
 				}
 
 
-                <Modal isOpen={this.state.isOpen} style={{content : { top: '50%', left: '50%', right: 'auto', bottom: 'auto', marginRight: '-50%', transform: 'translate(-50%, -50%)', textAlign: 'right'}}} >
+                <Modal isOpen={this.state.isOpen} style={{content : { top: '50%', boxShadow: '5px 5px 5px #888888', left: '50%', right: 'auto', bottom: 'auto', marginRight: '-50%', transform: 'translate(-50%, -50%)', textAlign: 'right'}}} >
                     <button className='button_close' onClick={() => this.setState({isOpen: false})}>X</button>
                     <h1>{this.state.message}</h1>
                 </Modal>
